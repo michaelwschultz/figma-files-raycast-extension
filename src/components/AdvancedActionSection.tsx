@@ -40,7 +40,7 @@ export default function AdvancedActionSection(props: {
   return (
     <ActionPanel.Section title="Advanced">
       <Action icon={Icon.DeleteDocument} title="Clear Recent Files" onAction={handleClearVisited} />
-      <Action icon={Icon.Trash} title="Clear All Cache" onAction={handleClearCache} />
+      <Action icon={Icon.RotateAntiClockwise} title="Reload Files" onAction={handleClearCache} />
     </ActionPanel.Section>
   );
 }

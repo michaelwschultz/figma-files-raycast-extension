@@ -1,5 +1,5 @@
 import { useCachedState } from "@raycast/utils";
-import { useEffect } from "react";
+import { useEffect, useCallback } from "react";
 import type { File } from "../types";
 
 import { FileCollectionConfig, loadFileCollection, saveFileCollection } from "../lib/fileStorage";
@@ -7,13 +7,14 @@ import { FileCollectionConfig, loadFileCollection, saveFileCollection } from "..
 export function useFileCollection(config: FileCollectionConfig) {
   const [files, setFiles] = useCachedState<File[]>(config.cacheKey);
 
-  useEffect(() => {
-    const loadFiles = async () => {
-      const loadedFiles = await loadFileCollection(config);
-      setFiles(loadedFiles);
-    };
-    loadFiles();
+  const loadFiles = useCallback(async () => {
+    const loadedFiles = await loadFileCollection(config);
+    setFiles(loadedFiles);
   }, [config.storageKey, setFiles]);
+
+  useEffect(() => {
+    loadFiles();
+  }, [loadFiles]);
 
   async function addFile(file: File) {
     if (!files) return;

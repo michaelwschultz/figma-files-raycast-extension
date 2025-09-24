@@ -23,11 +23,23 @@ export const VISITED_CONFIG: FileCollectionConfig = {
   displayName: "visited",
 };
 
+// Configuration for API data
+export const PROJECT_FILES_CONFIG: FileCollectionConfig = {
+  storageKey: "PROJECT_FILES",
+  maxItems: 1,
+  cacheKey: "projectFiles",
+  displayName: "project files",
+};
+
 export async function loadFileCollection(config: FileCollectionConfig): Promise<File[]> {
   const item = await LocalStorage.getItem<string>(config.storageKey);
   if (item) {
-    const parsed = JSON.parse(item) as File[];
-    return parsed;
+    try {
+      const parsed = JSON.parse(item) as File[];
+      return Array.isArray(parsed) ? parsed : [];
+    } catch {
+      return [];
+    }
   }
   return [];
 }
