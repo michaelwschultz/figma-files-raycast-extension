@@ -20,7 +20,7 @@ async function request<T>(path: string, opts?: RequestInit) {
   });
 
   if (!response.ok) {
-    const error: RequestError = new Error(`Request failed with status ${response.status}: ${response.statusText}`);
+    const error: RequestError = new Error(`Request failed: ${response.status}: ${response.statusText}`);
     error.response = response;
     return Promise.reject(error);
   }
@@ -90,10 +90,10 @@ export async function resolveAllFiles(): Promise<TeamFiles[]> {
 
 export async function fetchPages(fileKey: string) {
   try {
-    const json = await request<FileDetail>(`/files/${fileKey}?depth=1`, {
+    const result = await request<FileDetail>(`/files/${fileKey}?depth=1`, {
       method: "GET",
     });
-    return json.document.children;
+    return result.document.children;
   } catch (error) {
     console.error(error);
     if (environment.launchType !== "background") {
