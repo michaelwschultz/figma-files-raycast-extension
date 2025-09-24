@@ -32,7 +32,9 @@ async function request<T>(path: string, opts?: RequestInit, { maxRetries = 2 } =
     // Handle rate limiting (429 errors)
     if (response.status === 429) {
       if (attempts++ >= maxRetries) {
-        const error: RequestError = new Error(`Rate limit exceeded after ${attempts} attempts. Please try again later.`);
+        const error: RequestError = new Error(
+          `Rate limit exceeded after ${attempts} attempts.`,
+        );
         error.response = response;
         return Promise.reject(error);
       }
@@ -47,9 +49,7 @@ async function request<T>(path: string, opts?: RequestInit, { maxRetries = 2 } =
 
     // Handle authentication errors (403 - token expired)
     if (response.status === 403) {
-      const error: RequestError = new Error(
-        `Auth failed: Your Figma access token has expired.`
-      );
+      const error: RequestError = new Error(`Auth failed: Your Figma access token has expired.`);
       error.response = response;
       return Promise.reject(error);
     }
