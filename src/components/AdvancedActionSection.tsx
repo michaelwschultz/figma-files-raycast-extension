@@ -1,6 +1,6 @@
 import { Action, ActionPanel, Icon, Toast, showToast } from "@raycast/api";
 import { clearFiles } from "../cache";
-import { clearVisitedFiles } from "../hooks/useVisitedFiles";
+import { clearVisitedFiles } from "../lib/fileStorage";
 
 export default function AdvancedActionSection(props: {
   revalidateVisitedFiles: () => void;

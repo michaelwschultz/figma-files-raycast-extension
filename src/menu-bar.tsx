@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { resolveAllFiles } from "./api";
 import { useVisitedFiles } from "./hooks/useVisitedFiles";
 import { figma } from "./oauth";
-import { loadStarredFiles } from "./starFiles";
+import { loadStarredFiles } from "./lib/fileStorage";
 
 function Command() {
   const { data, isLoading, error } = useCachedPromise(

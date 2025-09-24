@@ -6,7 +6,7 @@ import { ErrorView } from "./components/ErrorView";
 import FileGridItem from "./components/FileGridItem";
 import { useVisitedFiles } from "./hooks/useVisitedFiles";
 import { figma } from "./oauth";
-import { loadStarredFiles } from "./starFiles";
+import { loadStarredFiles } from "./lib/fileStorage";
 import type { TeamFiles } from "./types";
 
 function Command({ launchContext }: Readonly<LaunchProps<{ launchContext: { query: string } }>>) {
