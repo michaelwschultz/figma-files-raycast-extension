@@ -6,26 +6,59 @@ interface RequestError extends Error {
   response?: Response;
 }
 
-async function request<T>(path: string, opts?: RequestInit) {
+// Utility function for retry delays
+const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
+
+async function request<T>(path: string, opts?: RequestInit, { maxRetries = 2 } = {}) {
   const { PERSONAL_ACCESS_TOKEN } = getPreferenceValues();
   const { token, type } = getAccessToken();
 
-  const response = await fetch(`https://api.figma.com/v1${path}`, {
-    headers: {
-      ...opts?.headers,
-      "Content-Type": "application/json",
-      ...(type === "oauth" ? { Authorization: `Bearer ${token}` } : { "X-Figma-Token": PERSONAL_ACCESS_TOKEN }),
-    },
-    ...opts,
-  });
+  let attempts = 0;
 
-  if (!response.ok) {
+  while (true) {
+    const response = await fetch(`https://api.figma.com/v1${path}`, {
+      headers: {
+        ...opts?.headers,
+        "Content-Type": "application/json",
+        ...(type === "oauth" ? { Authorization: `Bearer ${token}` } : { "X-Figma-Token": PERSONAL_ACCESS_TOKEN }),
+      },
+      ...opts,
+    });
+
+    if (response.ok) {
+      return response.json() as Promise<T>;
+    }
+
+    // Handle rate limiting (429 errors)
+    if (response.status === 429) {
+      if (attempts++ >= maxRetries) {
+        const error: RequestError = new Error(`Rate limit exceeded after ${attempts} attempts. Please try again later.`);
+        error.response = response;
+        return Promise.reject(error);
+      }
+
+      // Use retry-after header if available, otherwise exponential backoff
+      const retryAfterSec = Number(response.headers.get("retry-after")) || Math.min(2 ** attempts, 60);
+      console.log(`Rate limited, retrying after ${retryAfterSec} seconds... (attempt ${attempts}/${maxRetries})`);
+
+      await sleep(retryAfterSec * 1000);
+      continue;
+    }
+
+    // Handle authentication errors (403 - token expired)
+    if (response.status === 403) {
+      const error: RequestError = new Error(
+        `Auth failed: Your Figma access token has expired.`
+      );
+      error.response = response;
+      return Promise.reject(error);
+    }
+
+    // Handle other HTTP errors
     const error: RequestError = new Error(`Request failed: ${response.status}: ${response.statusText}`);
     error.response = response;
     return Promise.reject(error);
   }
-
-  return response.json() as Promise<T>;
 }
 
 async function fetchTeamProjects(): Promise<TeamProjects[]> {
