@@ -1,9 +1,9 @@
-## Find your Figma Team ID
+## Find Figma Team ID
 
-- Visit [Figma.com](https://figma.com/)
-- Sign in and open a document from any team
+- [Sign in](https://figma.com/) and open a document from any team
 - Your team ID will be available in the URL
-- E.g. figma.com/files/team/[YOUR TEAM ID]/etc...
+- E.g. figma.com/files/team/[YOUR TEAM ID]/...
 
-#### Multiple team IDs may be entered separated by commas.
-#### Drafts will not show up here as they are not available via the Figma API.
+Multiple team IDs may be entered separated by commas.
+
+> Unfortunitly <b>drafts</b> are not available via the Figma API and will not be listed.
