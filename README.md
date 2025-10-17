@@ -1,6 +1,6 @@
 # Figma file search
 
-![screenshot](./metadata/figma-files-raycast-extension-1.png)
+![screenshot](./assets/figma-files-raycast-extension-1.png)
 
 Figma file search helps you quickly open a Figma file from anywhere on your mac. It's packed with features like,
 
